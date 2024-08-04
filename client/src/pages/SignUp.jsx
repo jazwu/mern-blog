@@ -18,7 +18,7 @@ export default function SignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.username || !formData.email || !formData.password) {
+    if (!formData.username || !formData.email) {
       setErrorMessage("Please fill in all fields");
       return;
     }
@@ -36,10 +36,13 @@ export default function SignUp() {
       const data = await response.json();
       if (data.success === false) {
         setErrorMessage(data.message);
+        setLoading(false);
         return;
       }
       setLoading(false);
-      navigate("/sign-in");
+      if (response.ok) {
+        navigate("/sign-in");
+      }
     } catch (error) {
       setErrorMessage(error.message);
       setLoading(false);
