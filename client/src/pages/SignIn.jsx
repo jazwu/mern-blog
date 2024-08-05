@@ -1,12 +1,18 @@
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from "../redux/user/userSlice";
 
 export default function SignIn() {
   const [formData, setFormData] = useState({});
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const { loading, error: errorMessage } = useSelector((state) => state.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setFormData({
@@ -19,13 +25,11 @@ export default function SignIn() {
     e.preventDefault();
 
     if (!formData.email || !formData.password) {
-      setErrorMessage("Please fill in all fields");
-      return;
+      return dispatch(signInFailure("Please fill in all fields"));
     }
 
     try {
-      setLoading(true);
-      setErrorMessage(null);
+      dispatch(signInStart());
       const response = await fetch("/api/auth/signin", {
         method: "POST",
         headers: {
@@ -35,17 +39,14 @@ export default function SignIn() {
       });
       const data = await response.json();
       if (data.success === false) {
-        setErrorMessage(data.message);
-        setLoading(false);
-        return;
+        return dispatch(signInFailure(data.message));
       }
-      setLoading(false);
       if (response.ok) {
+        dispatch(signInSuccess(data));
         navigate("/");
       }
     } catch (error) {
-      setErrorMessage(error.message);
-      setLoading(false);
+      dispatch(signInFailure(error.message));
     }
   };
 
@@ -91,13 +92,19 @@ export default function SignIn() {
                 value={formData.password}
               />
             </div>
-            <Button gradientDuoTone="purpleToBlue" type="submit" disabled={loading}>
+            <Button
+              gradientDuoTone="purpleToBlue"
+              type="submit"
+              disabled={loading}
+            >
               {loading ? (
                 <div>
-                  <Spinner size="sm"/>
+                  <Spinner size="sm" />
                   <span className="pl-3">Loading...</span>
                 </div>
-              ) : "Sign In"}
+              ) : (
+                "Sign In"
+              )}
             </Button>
           </form>
           <p className="text-sm mt-5">
@@ -106,13 +113,11 @@ export default function SignIn() {
               Sign Up
             </Link>
           </p>
-          {
-            errorMessage && (
-              <Alert className="mt-5" color="failure">
-                {errorMessage}
-              </Alert>
-            )
-          }
+          {errorMessage && (
+            <Alert className="mt-5" color="failure">
+              {errorMessage}
+            </Alert>
+          )}
         </div>
       </div>
     </div>
