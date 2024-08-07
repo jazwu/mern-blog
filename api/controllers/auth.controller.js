@@ -2,7 +2,6 @@ import User from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
 import { errorHandler } from "../utils/error.js";
 import jwt from "jsonwebtoken";
-import e from "express";
 
 export const signup = async (req, res, next) => {
   const { username, email, password } = req.body;
@@ -57,5 +56,37 @@ export const signin = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-  
+};
+
+export const google = async (req, res, next) => {
+  const { name, email, googlePhotoURL } = req.body;
+
+  if (!name || !email || name === "" || email === "") {
+    return next(errorHandler(400, "All fields are required"));
+  }
+
+  try {
+    let user = await User.findOne({ email });
+    if (!user) {
+      const generatedPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
+      const hashedPassword = bcryptjs.hashSync(generatedPassword, 12);
+      const newUser = new User({ 
+        username: name.toLowerCase().replace(/ /g, "") + Math.random().toString(10).slice(-4),
+        email, 
+        password: hashedPassword, 
+        profilePicture: googlePhotoURL 
+      });
+      await newUser.save();
+    }
+
+    const { password, ...rest } = user._doc;
+
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+      res
+        .status(200)
+        .cookie("token", token, { httpOnly: true })
+        .json(rest);
+  } catch (error) {
+    next(error);
+  }
 }

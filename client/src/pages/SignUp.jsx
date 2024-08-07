@@ -101,7 +101,7 @@ export default function SignUp() {
                 value={formData.password}
               />
             </div>
-            <Button gradientDuoTone="purpleToBlue" type="submit" disabled={loading}>
+            <Button gradientDuoTone="purpleToPink" type="submit" disabled={loading}>
               {loading ? (
                 <div>
                   <Spinner size="sm"/>

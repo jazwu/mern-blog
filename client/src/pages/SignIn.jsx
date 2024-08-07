@@ -7,6 +7,7 @@ import {
   signInSuccess,
   signInFailure,
 } from "../redux/user/userSlice";
+import OAuth from "../components/OAuth";
 
 export default function SignIn() {
   const [formData, setFormData] = useState({});
@@ -93,7 +94,7 @@ export default function SignIn() {
               />
             </div>
             <Button
-              gradientDuoTone="purpleToBlue"
+              gradientDuoTone="purpleToPink"
               type="submit"
               disabled={loading}
             >
@@ -106,6 +107,7 @@ export default function SignIn() {
                 "Sign In"
               )}
             </Button>
+            <OAuth />
           </form>
           <p className="text-sm mt-5">
             Don't have an account?{" "}
