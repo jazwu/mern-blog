@@ -62,8 +62,12 @@ export default function DashProfile() {
     );
   };
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+  }
+
   return (
-    <div className="w-full">
+    <div className="max-w-lg mx-auto p-3 w-full">
       <h1 className="my-7 text-center font-semibold text-3xl">Profile</h1>
       <form className="flex flex-col gap-2">
         <input
@@ -94,7 +98,7 @@ export default function DashProfile() {
                   stroke: `rgba(104, 117, 245, ${imageUploadProgress / 100})`,
                 },
                 text: {
-                  fill: "#6875f5"
+                  fill: "#6875f5",
                 },
               }}
             />
@@ -102,7 +106,9 @@ export default function DashProfile() {
           <img
             src={imageURL || currentUser.profilePicture}
             alt="user"
-            className={`rounded-full shadow-lg w-full h-full object-cover border-8 border-[lightgray] ${imageUploadProgress && imageUploadProgress<100 && "opacity-60"}`}
+            className={`rounded-full shadow-lg w-full h-full object-cover border-8 border-[lightgray] ${
+              imageUploadProgress && imageUploadProgress < 100 && "opacity-60"
+            }`}
           />
         </div>
         {imageUploadError && <Alert color="failure">{imageUploadError}</Alert>}
@@ -113,7 +119,7 @@ export default function DashProfile() {
             id="username"
             name="username"
             value={currentUser.username}
-            onChange={(e) => console.log(e.target.value)}
+            onChange={handleChange}
           />
         </div>
         <div>
@@ -123,7 +129,7 @@ export default function DashProfile() {
             id="email"
             name="email"
             value={currentUser.email}
-            onChange={(e) => console.log(e.target.value)}
+            onChange={handleChange}
           />
         </div>
         <div>
@@ -133,10 +139,9 @@ export default function DashProfile() {
             id="password"
             name="password"
             value={currentUser.password}
-            onChange={(e) => console.log(e.target.value)}
+            onChange={handleChange}
           />
         </div>
-
         <Button
           type="submit"
           gradientDuoTone={"purpleToBlue"}
