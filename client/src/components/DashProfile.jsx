@@ -89,6 +89,8 @@ export default function DashProfile() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    dispatch(updateStart());
+
     if (imageIsUploading) {
       setUserUpdateSuccess(null);
       return setUserUpdateError("Please wait until the image is uploaded");
@@ -99,8 +101,9 @@ export default function DashProfile() {
       return setUserUpdateError("Please update at least one field");
     }
 
+    setUserUpdateError(null);
+
     try {
-      dispatch(updateStart());
       const response = await fetch(`/api/user/update/${currentUser._id}`, {
         method: "PUT",
         headers: {
@@ -112,16 +115,13 @@ export default function DashProfile() {
       if (!response.ok) {
         dispatch(updateFailure(data.message));
         setUserUpdateSuccess(null);
-        setUserUpdateError(data.message);
-        return;
+      } else {
+        dispatch(updateSuccess(data));
+        setUserUpdateSuccess("Profile updated successfully");
       }
-      dispatch(updateSuccess(data));
-      setUserUpdateSuccess("Profile updated successfully");
-      setUserUpdateError(null);
     } catch (error) {
       dispatch(updateFailure(error.message));
       setUserUpdateSuccess(null);
-      setUserUpdateError(error.message);
     }
   };
 
@@ -253,10 +253,7 @@ export default function DashProfile() {
               Are you sure you want to delete this account?
             </h3>
             <div className="flex justify-center gap-4">
-              <Button
-                color="failure"
-                onClick={handleDeleteUser}
-              >
+              <Button color="failure" onClick={handleDeleteUser}>
                 Yes, I'm sure
               </Button>
               <Button
