@@ -10,9 +10,9 @@ import {
 import { app } from "../firebase";
 import { CircularProgressbar } from "react-circular-progressbar";
 import {
-  updateStart,
-  updateSuccess,
-  updateFailure,
+  updateUserStart,
+  updateUserSuccess,
+  updateUserFailure,
   deleteUserStart,
   deleteUserSuccess,
   deleteUserFailure,
@@ -89,7 +89,7 @@ export default function DashProfile() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    dispatch(updateStart());
+    dispatch(updateUserStart());
 
     if (imageIsUploading) {
       setUserUpdateSuccess(null);
@@ -113,14 +113,14 @@ export default function DashProfile() {
       });
       const data = await response.json();
       if (!response.ok) {
-        dispatch(updateFailure(data.message));
+        dispatch(updateUserFailure(data.message));
         setUserUpdateSuccess(null);
       } else {
-        dispatch(updateSuccess(data));
+        dispatch(updateUserSuccess(data));
         setUserUpdateSuccess("Profile updated successfully");
       }
     } catch (error) {
-      dispatch(updateFailure(error.message));
+      dispatch(updateUserFailure(error.message));
       setUserUpdateSuccess(null);
     }
   };
