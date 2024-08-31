@@ -19,6 +19,7 @@ import {
 } from "../redux/user/userSlice";
 import "react-circular-progressbar/dist/styles.css";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
+import { Link } from "react-router-dom";
 
 export default function DashProfile() {
   const { currentUser, loading, error } = useSelector((state) => state.user);
@@ -225,10 +226,22 @@ export default function DashProfile() {
           outline
           className="mt-5"
           onClick={handleSubmit}
+          disabled={loading || imageIsUploading}
         >
-          Update
+          { loading ? "Loading..." : "Update"}
         </Button>
       </form>
+      {currentUser.isAdmin && (
+        <Link to="/create-post">
+          <Button
+            type="button"
+            className="mt-5 w-full"
+            gradientDuoTone="purpleToPink"
+          >
+            Create a post
+          </Button>
+        </Link>
+      )}
       <div className="text-red-500 mt-5 text-center">
         <span
           onClick={() => {
