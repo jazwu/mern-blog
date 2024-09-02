@@ -20,6 +20,7 @@ import {
 import "react-circular-progressbar/dist/styles.css";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { Link } from "react-router-dom";
+import { set } from "mongoose";
 
 export default function DashProfile() {
   const { currentUser, loading, error } = useSelector((state) => state.user);
@@ -124,6 +125,7 @@ export default function DashProfile() {
       dispatch(updateUserFailure(error.message));
       setUserUpdateSuccess(null);
     }
+    setImageUploadProgress(null);
   };
 
   const handleDeleteUser = async () => {
