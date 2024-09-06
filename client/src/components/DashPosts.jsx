@@ -5,8 +5,8 @@ import { Link } from "react-router-dom";
 
 export default function DashPosts() {
   const { currentUser } = useSelector((state) => state.user);
-  const [posts, setPosts] = useState([]);
-  console.log(posts);
+  const [userPosts, setUserPosts] = useState([]);
+  const [showMore, setShowMore] = useState(true);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -15,7 +15,10 @@ export default function DashPosts() {
       );
       if (response.ok) {
         const data = await response.json();
-        setPosts(data.posts);
+        setUserPosts(data.posts);
+        if (data.posts.length < 9) {
+          setShowMore(false);
+        }
       }
     };
     if (currentUser.isAdmin) {
@@ -23,12 +26,33 @@ export default function DashPosts() {
     }
   }, [currentUser._id]);
 
+  const handleShowMore = async () => {
+    const srartIndex = userPosts.length;
+    try {
+        const response = await fetch(
+            `/api/post/getposts?userId=${currentUser._id}&startIndex=${srartIndex}`
+        );
+        if (response.ok) {
+            const data = await response.json();
+            setUserPosts((prev) => [...prev, ...data.posts]);
+            if (data.posts.length < 9) {
+                setShowMore(false);
+            }
+        }
+    } catch (error) {
+        console.error(error);
+    }
+  }
+
   return (
-    <div className="table-auto overflow-x-scroll md:mx-auto p-3 scrollbar
+    <div
+      className="table-auto overflow-x-scroll md:mx-auto p-3 scrollbar
      scrollbar-track-slate-100 scrollbar-thumb-slate-300
-     dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500">
-      {currentUser.isAdmin && posts.length > 0 && (
-        <Table hoverable>
+     dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500"
+    >
+      {currentUser.isAdmin && userPosts.length > 0 && (
+        <div>
+        <Table hoverable className="shadow-md">
           <Table.Head>
             <Table.HeadCell>Created Date</Table.HeadCell>
             <Table.HeadCell>Post Image</Table.HeadCell>
@@ -38,7 +62,7 @@ export default function DashPosts() {
             <Table.HeadCell>Edit</Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
-            {posts.map((post) => (
+            {userPosts.map((post) => (
               <Table.Row
                 key={post._id}
                 className="bg-white dark:border-gray-700 dark:bg-gray-800"
@@ -81,6 +105,12 @@ export default function DashPosts() {
             ))}
           </Table.Body>
         </Table>
+        {showMore && (
+            <button className="w-full text-teal-500 text-sm self-center py-7" onClick={handleShowMore}>
+                Show More
+            </button>
+        )}
+        </div>
       )}
     </div>
   );
