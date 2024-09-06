@@ -74,3 +74,36 @@ export const deletepost = async (req, res, next) => {
     next(error);
   }
 }
+
+export const updatepost = async (req, res, next) => {
+  if (!req.user.isAdmin || req.user.id !== req.params.userId) {
+    return next(errorHandler(403, "You are not authorized to update this post"));
+  }
+  if (!req.body.title || !req.body.content) {
+    return next(errorHandler(400, "Title and content are required"));
+  }
+
+  const slug = req.body.title
+    .toLowerCase()
+    .split(" ")
+    .join("-")
+    .replace(/[^a-zA-Z0-9-]/g, "-");
+  
+  try {
+    const updatedPost = await Post.findByIdAndUpdate(req.params.postId, 
+      {
+        $set: {
+          title: req.body.title,
+          content: req.body.content,
+          category: req.body.category,
+          image: req.body.image,
+        }
+      }, { new: true });
+    if (!updatedPost) {
+      return next(errorHandler(404, "Post not found"));
+    }
+    res.status(200).json(updatedPost);
+  } catch (error) {
+    next(error);
+  }
+}
