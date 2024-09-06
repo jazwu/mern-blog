@@ -17,7 +17,7 @@ const postSchema = new mongoose.Schema(
         },
         image: {
             type: String,
-            default: "https://storyset.com/illustration/blog-post/amico"
+            default: "https://simplybuiltsites.com/wp-content/uploads/how-to-write-a-blog-post.png"
         },
         category: {
             type: String,
