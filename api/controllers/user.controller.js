@@ -78,9 +78,43 @@ export const deleteUser = async (req, res, next) => {
 };
 
 export const signout = (req, res, next) => {
-  try{
+  try {
     res.clearCookie("access_token");
     res.status(200).json({ message: "User has been signed out" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getUsers = async (req, res, next) => {
+  if (!req.user.isAdmin) {
+    return next(
+      errorHandler(403, "You are not authorized to perform this action")
+    );
+  }
+
+  const startIndex = parseInt(req.query.startIndex) || 0;
+  const limit = parseInt(req.query.limit) || 10;
+  const sortDirection = req.query.sortDirection === "asc" ? 1 : -1;
+
+  try {
+    const users = await User.find({})
+      .sort({ createdAt: sortDirection })
+      .skip(startIndex)
+      .limit(limit)
+      .select("-password");
+
+    const totalUsers = await User.countDocuments();
+    const oneMonthAgo = new Date().setMonth(new Date().getMonth() - 1);
+    const lastMonthUsers = await User.countDocuments({
+      createdAt: { $gte: oneMonthAgo },
+    });
+
+    res.status(200).json({
+      users,
+      totalUsers,
+      lastMonthUsers,
+    });
   } catch (error) {
     next(error);
   }
