@@ -46,6 +46,20 @@ export default function DashPosts() {
 
   const handleDeleteUser = async () => {
     setShowModal(false);
+
+    try {
+        const response = await fetch(`/api/user/delete/${userIdToDelete}`, {
+            method: "DELETE",
+        });
+        if (response.ok) {
+            const data = await response.json();
+            setUsers((prev) => prev.filter((user) => user._id !== userIdToDelete));
+        } else {
+            console.error("Failed to delete user");
+        }
+    } catch (error) {
+        console.error(error);
+    }
   };
 
   return (
