@@ -2,6 +2,8 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Spinner, Button } from "flowbite-react";
 import { Link } from "react-router-dom";
+import CallToAction from "../components/CallToAction";
+import DOMPurify from 'dompurify';
 
 export default function PostPage() {
   const { postSlug } = useParams();
@@ -65,8 +67,11 @@ export default function PostPage() {
           </div>
           <div
             className="p-3 max-w-2xl w-full mx-auto post-content"
-            dangerouslySetInnerHTML={{ __html: post.content }}
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}
           ></div>
+          <div className="max-w-4xl mx-auto">
+            <CallToAction />
+          </div>
         </main>
       )}
     </div>
