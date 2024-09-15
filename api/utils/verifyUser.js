@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import { errorHandler } from "./error.js";
+import mongoose from "mongoose";
 
 function verifyToken(req, res, next) {
     const token = req.cookies.access_token;

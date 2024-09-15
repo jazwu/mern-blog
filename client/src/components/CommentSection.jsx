@@ -75,10 +75,36 @@ export default function CommentSection({ postId }) {
           )
         );
       } else {
-        setErrorMessage(data.message);
+        console.log(data.message);
       }
     } catch (err) {
-      setErrorMessage(err.message);
+      console.error(err);
+    }
+  };
+
+  const handleEdit = async (commentId, content) => {
+    if(!currentUser) {
+      navigate("/sign-in");
+      return;
+    }
+    try {
+      const res = await fetch(`/api/comment/edit/${commentId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ content }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setPostComments((prevComments) =>
+          prevComments.map((c) => (c._id === data._id ? data : c))
+        );
+      } else {
+        console.error(data.message);
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -148,7 +174,7 @@ export default function CommentSection({ postId }) {
           </div>
           {
             postComments.map((comment) => (
-              <Comment key={comment._id} comment={comment} onLike={handleLike}/>
+              <Comment key={comment._id} comment={comment} onLike={handleLike} onEdit={handleEdit}/>
             ))
           }
         </>
