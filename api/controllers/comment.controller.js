@@ -51,16 +51,32 @@ export const likeComment = async (req, res, next) => {
 export const editComment = async (req, res, next) => {
   const { content } = req.body;
   try {
-    const comment = await Comment.findById(req.params.commentId);
-    if (!comment) {
+    const editedComment = await Comment.findByIdAndUpdate(
+      req.params.commentId,
+      { content },
+      { new: true }
+    );
+    if (!editedComment) {
       return next(errorHandler(404, "Comment not found"));
     }
-    if (comment.userId.toString() !== req.user.id) {
+    if (editedComment.userId.toString() !== req.user.id) {
       return next(errorHandler(401, "Unauthorized"));
     }
-    comment.content = content;
-    await comment.save();
-    res.status(200).json(comment);
+    res.status(200).json(editedComment);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const deleteComment = async (req, res, next) => {
+  try {
+    const deletedComment = await Comment.findByIdAndDelete(
+      req.params.commentId
+    );
+    if (!deletedComment) {
+      return next(errorHandler(404, "Comment not found"));
+    }
+    res.status(200).json({ message: "Comment deleted" });
   } catch (err) {
     next(err);
   }
