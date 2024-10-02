@@ -1,5 +1,5 @@
 import { Sidebar } from "flowbite-react";
-import { HiUser, HiLogout, HiDocumentText, HiUserGroup } from "react-icons/hi";
+import { HiUser, HiLogout, HiDocumentText, HiUserGroup, HiAnnotation } from "react-icons/hi";
 import { useSelector, useDispatch } from "react-redux";
 import {
   signoutStart,
@@ -59,6 +59,16 @@ export default function DashSiderBar({ tab }) {
               href="/dashboard?tab=users"
             >
               Users
+            </Sidebar.Item>
+          )}
+
+          {currentUser.isAdmin && (
+            <Sidebar.Item
+              active={tab === "comments"}
+              icon={HiAnnotation}
+              href="/dashboard?tab=comments"
+            >
+              Comments
             </Sidebar.Item>
           )}
 
