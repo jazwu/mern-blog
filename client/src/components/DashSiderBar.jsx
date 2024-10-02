@@ -1,5 +1,12 @@
 import { Sidebar } from "flowbite-react";
-import { HiUser, HiLogout, HiDocumentText, HiUserGroup, HiAnnotation } from "react-icons/hi";
+import {
+  HiUser,
+  HiLogout,
+  HiDocumentText,
+  HiUserGroup,
+  HiAnnotation,
+  HiChartPie,
+} from "react-icons/hi";
 import { useSelector, useDispatch } from "react-redux";
 import {
   signoutStart,
@@ -32,6 +39,16 @@ export default function DashSiderBar({ tab }) {
     <Sidebar className="w-full md:w-56">
       <Sidebar.Items>
         <Sidebar.ItemGroup className="flex flex-col gap-1">
+          {currentUser.isAdmin && (
+            <Sidebar.Item
+              active={tab === "dash" || !tab}
+              icon={HiChartPie}
+              href="/dashboard?tab=dash"
+            >
+              Dashboard
+            </Sidebar.Item>
+          )}
+
           <Sidebar.Item
             active={tab === "profile"}
             icon={HiUser}

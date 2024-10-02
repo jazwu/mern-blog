@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Table, Modal, Button } from "flowbite-react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
-import { FaCheck, FaTimes } from "react-icons/fa";
 
 export default function DashPosts() {
   const { currentUser } = useSelector((state) => state.user);
@@ -13,7 +12,7 @@ export default function DashPosts() {
 
   useEffect(() => {
     const fetchComments = async () => {
-      const response = await fetch("/api/comment/getComments");
+      const response = await fetch("/api/comment/getcomments");
       if (response.ok) {
         const data = await response.json();
         setComments(data.comments);
