@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 
 export default function CallToAction() {
   return (
-    <div className="flex p-3 text-sm font-serif border rounded-bl-3xl rounded-tr-3xl shadow-sm">
-      <div className="border-r p-3 flex flex-col gap-3 justify-around pr-6 flex-[2]">
+    <div className="flex flex-col sm:flex-row p-3 text-sm font-serif border rounded-bl-3xl rounded-tr-3xl shadow-sm">
+      <div className="sm:border-r p-3 flex flex-col gap-3 justify-around pr-6 flex-[2]">
         <h2 className="text-xl font-semibold">SUBSCRIBE</h2>
         <h3 className="text-lg font-sans">Newsletter</h3>
         <p>
