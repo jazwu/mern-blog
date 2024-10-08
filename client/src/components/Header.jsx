@@ -4,20 +4,35 @@ import { AiOutlineSearch } from "react-icons/ai";
 import { FaMoon, FaSun } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleTheme } from "../redux/theme/themeSlice";
-import { signoutFailure, signoutStart, signoutSuccess } from "../redux/user/userSlice";
+import {
+  signoutFailure,
+  signoutStart,
+  signoutSuccess,
+} from "../redux/user/userSlice";
+import { useEffect, useState } from "react";
 
 export default function Header() {
   const path = useLocation().pathname;
+  const location = useLocation();
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
   const { theme } = useSelector((state) => state.theme);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const searchTerm = urlParams.get("searchTerm");
+    if (searchTerm) {
+      setSearchTerm(searchTerm);
+    }
+  }, [location.search]);
 
   const handleSignout = async () => {
     dispatch(signoutStart());
 
     try {
       const response = await fetch("/api/user/signout", {
-        method: "POST"
+        method: "POST",
       });
       if (response.ok) {
         dispatch(signoutSuccess());
@@ -26,6 +41,13 @@ export default function Header() {
       }
     } catch (error) {
       dispatch(signoutFailure(error.message));
+    }
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchTerm) {
+      window.location.href = `/search?searchTerm=${searchTerm}&sort=desc&category=Uncategorized`;
     }
   };
 
@@ -44,27 +66,34 @@ export default function Header() {
         </span>
         Blog
       </Link>
-      <form>
+      <form onSubmit={handleSearch}>
         <TextInput
           type="text"
           placeholder="Search..."
           rightIcon={AiOutlineSearch}
           className="hidden lg:inline"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
       </form>
       <Button className="w-12 h-10 lg:hidden" color="gray" pill>
         <AiOutlineSearch />
       </Button>
       <div className="flex gap-2 md:order-2">
-        <Button className="w-12 h-10 hidden sm:inline" color="gray" pill onClick={() => dispatch(toggleTheme())}>
-          { theme === "light" ? <FaMoon /> : <FaSun/>}
+        <Button
+          className="w-12 h-10 hidden sm:inline"
+          color="gray"
+          pill
+          onClick={() => dispatch(toggleTheme())}
+        >
+          {theme === "light" ? <FaMoon /> : <FaSun />}
         </Button>
         {currentUser ? (
           <Dropdown
             arrowIcon={false}
             inline
             label={
-              <Avatar alt="user" img={currentUser.profilePicture} rounded/>
+              <Avatar alt="user" img={currentUser.profilePicture} rounded />
             }
           >
             <Dropdown.Header>
