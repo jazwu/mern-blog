@@ -31,7 +31,7 @@ export default function CallToAction() {
           fron-end development. She cares about mental health and likes being
           nerdy on everyday topics.
         </p>
-        <Link>Read more &rarr;</Link>
+        <Link to="/about">Read more &rarr;</Link>
       </div>
     </div>
   );

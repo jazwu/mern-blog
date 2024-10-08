@@ -157,12 +157,12 @@ export default function Search() {
             posts.length > 0 &&
             posts.map((post) => <PostCard key={post._id} post={post} />)}
           {showMore && (
-            <Button
-              className="text-teal-500 text-lg hover:underline p-7 w-full"
+            <button
+              className="text-teal-500 text-lg hover:underline p-7 w-full bg-transparent border-none hover:bg-transparent"
               onClick={handleShowMore}
             >
               Load More
-            </Button>
+            </button>
           )}
         </div>
       </div>
